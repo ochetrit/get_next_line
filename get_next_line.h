@@ -21,13 +21,10 @@
 # include <unistd.h>
 # include <fcntl.h>
 
-char			*last_temp(char *temp);
 char			*get_next_line(int fd);
 char			*end_of_file(char *temp);
-char			*ft_strcpy(char *dest, char *src);
-char			*ft_extend_temp(char *temp, char stock[BUFFER_SIZE], int n_oct);
-char			*build_temp(int fd, int n_oct, char *temp);
+char			*ft_strcpy(char *dest, char *src, int n_oct);
 unsigned int	ft_strlen(const char *str);
-unsigned int	ft_strchr(const char *str, int character);
+int	ft_strchr(const char *str, int character);
 
 #endif

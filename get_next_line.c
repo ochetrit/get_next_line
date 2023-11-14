@@ -13,146 +13,90 @@
 
 char	*get_next_line(int fd)
 {
-	char		*str;
-	char static	*temp;
-	int			count;
+		static char		*temp;
+		char			*str;
+		int						size;
+		int						i;
 
-	if (BUFFER_SIZE <= 0)
-		return (NULL);
-	temp = build_temp(fd, BUFFER_SIZE, temp);
-	count = ft_strchr(temp, '\n');
-	if (!count)
-	{
-		str = end_of_file(temp);
-		temp = NULL;
-		return (str);
-	}
-	str = (char *)malloc((count + 2) * sizeof(char));
-	if (!str)
-		return (NULL);
-	str = ft_strcpy(str, temp);
-	temp = last_temp(temp);
-	return (str);
+		if (ft_strchr(temp, '\n') == -1)
+			temp = ft_initialise(temp, fd);
+		size = ft_strchr(temp, '\n');
+		if (size == -1)
+			return (temp);
+		str = (char *)malloc((size + 2) * sizeof(char));		// +2 parce que on inclut le \n
+		i = -1;
+		while (++i <= size)
+			str[i] = temp[i];
+		str[i] = '\0';
+		temp = ft_replace_temp(temp, size);
 }
 
-char	*build_temp(int fd, int n_oct, char *temp)
+char	*ft_initialise(char *temp, int fd)
 {
 	char	stock[BUFFER_SIZE];
+	char	*new;
+	int			n_oct;
+	int			i;
 
-	while ((!ft_strchr(temp, '\n')) && n_oct == BUFFER_SIZE)
+	n_oct = read(fd, stock, BUFFER_SIZE);
+	if (n_oct < 1)
+		return (temp);
+	if (!temp)
 	{
-		n_oct = read(fd, stock, BUFFER_SIZE);
-		if (n_oct < 1)
-			return (temp);
-		temp = ft_extend_temp(temp, stock, n_oct);
-		if (!temp)
-			return (NULL);
+		new = (char *)malloc((n_oct + 1) * sizeof(char));
+		i = -1;
+		while (++i < n_oct)
+			new[i] = stock[i];
+		new[i] = '\0';
 	}
-	return (temp);
-}	
-
-char	*last_temp(char *temp)
-{
-	char			*new;
-	unsigned int	i;
-	unsigned int	j;
-
-	i = ft_strchr(temp, '\n') + 1;
-	if (!i)
-	{
-		free(temp);
-		return (NULL);
-	}
-	j = 0;
-	new = malloc((ft_strlen(temp) - i + 1) * sizeof(char));
-	if (!new)
-		return (NULL);
-	while (temp[i])
-	{
-		new[j] = temp[i];
-		j++;
-		i++;
-	}
-	new[j] = '\0';
-	free(temp);
+	else
+		new = ft_extend_temp(temp, stock, n_oct);
+	if (ft_strchr(new, '\n') == -1)
+		new = ft_initialise(new, fd);
 	return (new);
 }
 
-char	*ft_extend_temp(char *temp, char stock[BUFFER_SIZE], int n_oct)
+char 	*ft_extend_temp(char *temp, char stock[BUFFER_SIZE], int n_oct)
 {
-	char			*new;
-	unsigned int	i;
-	unsigned int	j;
+	char	*new;
+	unsigned int i;
+	unsigned int j;
 
 	new = (char *)malloc((ft_strlen(temp) + n_oct + 1) * sizeof(char));
-	if (!new)
-		return (NULL);
-	new[ft_strlen(temp) + n_oct] = '\0';
 	i = 0;
-	while (i < ft_strlen(temp))
+	while (temp[i])
 	{
 		new[i] = temp[i];
 		i++;
 	}
 	j = 0;
-	while (j < (unsigned int)n_oct)
+	while (j < n_oct)
 	{
 		new[i] = stock[j];
 		i++;
 		j++;
 	}
+	new[i] = '\0';
 	free(temp);
 	return (new);
 }
 
-char	*end_of_file(char *temp)
+char	*ft_replace_temp(char *temp, int i)			//TRES IMPORTANT POUR DEMAIN, PRENDRE LE CAS OU IL N Y A RIEN APRES LE DERNIER \n
 {
-	char			*str;
-	unsigned int	i;
+	char	*new;
+	unsigned int	len;
+	unsigned int	j;
 
-	i = ft_strlen(temp);
-	if (!i)
-		return (NULL);
-	str = (char *)malloc((i + 1) * sizeof(char));
-	if (!str)
-		return (NULL);
-	i = 0;
-	while (temp[i])
+	len = ft_strlen(temp);
+	new = (char *)malloc((len - i + 1) * sizeof(char));
+	j = 0;
+	while (i < len)
 	{
-		str[i] = temp[i];
+		new[j] = temp[i];
 		i++;
+		j++;
 	}
-	str[i] = '\0';
-	temp = NULL;
+	new[j] = '\0';
 	free(temp);
-	return (str);
+	return (new);
 }
-
-/* int main(int argc, char **argv)
-{
-	(void) argv;
-	if (argc == 2)
-	{
-		int fd = open("florian.txt", O_RDONLY);
-		char *str = "yo";
-		int i = 0;
-		while (str)
-		{
-			str = get_next_line(fd);
-			printf("%s", str);
-			i++;
-		}
-		printf("\n%d", i);
-	}
-	else
-	{
-		int fd = 0;
-		char *str = "yo";
-		while (str)
-		{
-			str = get_next_line(fd);
-			printf("%s", str);
-		}
-	}
-}
- */

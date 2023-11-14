@@ -23,32 +23,30 @@ unsigned int	ft_strlen(const char *str)
 	return (i);
 }
 
-unsigned int	ft_strchr(const char *str, int character)
+int		ft_strchr(const char *str, int character)
 {
 	int	i;
 
 	if (!str)
-		return (0);
+		return (-1);
 	i = 0;
 	while (str[i] && str[i] != (unsigned char)character)
 		i++;
 	if (str[i] == (unsigned char)character)
 		return (i);
-	return (0);
+	return (-1);
 }
 
-char	*ft_strcpy(char *dest, char *src)
+char	*ft_strcpy(char *dest, char *src, int n_oct)
 {
 	unsigned int	i;
 
 	i = 0;
-	while (src[i] && src[i] != '\n')
+	while (src[i] && i < n_oct)
 	{
 		dest[i] = src[i];
 		i++;
 	}
-	dest[i] = '\n';
-	i++;
 	dest[i] = '\0';
 	return (dest);
 }
