@@ -11,19 +11,19 @@
 /* ************************************************************************** */
 #include "get_next_line.h"
 
-unsigned int	ft_strlen(const char *str)
+int	ft_strlen(const char *str)
 {
-	unsigned int	i;
+	int	i;
 
 	i = 0;
 	if (!str)
-		return (0);
+		return (-1);
 	while (str[i])
 		i++;
 	return (i);
 }
 
-int		ft_strchr(const char *str, int character)
+int	ft_strchr(const char *str, int character)
 {
 	int	i;
 
@@ -37,16 +37,28 @@ int		ft_strchr(const char *str, int character)
 	return (-1);
 }
 
-char	*ft_strcpy(char *dest, char *src, int n_oct)
+char	*ft_strdup(char *src, int n)
 {
-	unsigned int	i;
+	int		i;
+	char	*dest;
 
 	i = 0;
-	while (src[i] && i < n_oct)
+	if (n == -1)
+		return (NULL);
+	dest = (char *)malloc((n + 1) * sizeof(char));
+	if (!dest)
+		return (NULL);
+	while (i < n)
 	{
 		dest[i] = src[i];
 		i++;
 	}
 	dest[i] = '\0';
 	return (dest);
+}
+
+char *free_temp(char *temp)
+{
+	free(temp);
+	return (NULL);
 }

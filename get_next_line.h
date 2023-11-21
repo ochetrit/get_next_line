@@ -16,15 +16,18 @@
 # ifndef BUFFER_SIZE
 #  define BUFFER_SIZE 50
 # endif
-# include <stdlib.h>
-# include <stdio.h>
-# include <unistd.h>
 # include <fcntl.h>
+# include <stdio.h>
+# include <stdlib.h>
+# include <unistd.h>
 
-char			*get_next_line(int fd);
-char			*end_of_file(char *temp);
-char			*ft_strcpy(char *dest, char *src, int n_oct);
-unsigned int	ft_strlen(const char *str);
-int	ft_strchr(const char *str, int character);
+char	*free_temp(char *temp);
+char	*get_next_line(int fd);
+char	*ft_initialise(char *temp, int fd);
+char	*ft_replace_temp(char *temp, int i);
+char	*ft_extend_temp(char *temp, char stock[BUFFER_SIZE], int n_oct);
+char	*ft_strdup(char *src, int n);
+int		ft_strlen(const char *str);
+int		ft_strchr(const char *str, int character);
 
 #endif
